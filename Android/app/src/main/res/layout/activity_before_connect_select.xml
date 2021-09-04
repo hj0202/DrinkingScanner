@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 역시 마찬가지로 추후에 아이콘 + text 추가하는 걸로 -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_sel_soju"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="소주"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_sel_beer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="맥주"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_sel_wine"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="와인"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_sel_makkulli"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="막걸리"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_sel_liquor"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="양주"
+            android:textSize="20sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/btn_sel_else"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="기타"
+            android:textSize="20sp"
+            android:backgroundTint="#55DDAA"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>
