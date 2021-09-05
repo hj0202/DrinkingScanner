@@ -34,6 +34,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ConnectBluetooth"></activity>
+
     </application>
 
 </manifest>
