@@ -1,6 +1,7 @@
 package com.example.drinkingscanner;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -29,7 +30,6 @@ public class BeforeConnectSelectActivity extends Activity {
         btnSelectLiquor = (Button) findViewById(R.id.btn_sel_liquor);
         btnSelectElse = (Button) findViewById(R.id.btn_sel_else);
 
-        
         // Button 클릭(기타 제외) -> SharedPreference 저장 후 기기 연결 페이지 이동
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -58,6 +58,9 @@ public class BeforeConnectSelectActivity extends Activity {
                 }
                 // 여기에 기기 연결 페이지 이동문 작성하기.
                 Toast.makeText(getApplicationContext(), "기기 연결로 갑시다!", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getApplicationContext(), ConnectBluetooth.class);
+                startActivity(intent);
             }
         };
 
