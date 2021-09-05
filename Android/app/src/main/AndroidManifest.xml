@@ -35,6 +35,7 @@
         </activity>
 
         <activity android:name=".ConnectBluetooth"></activity>
+        <activity android:name=".DrinkingAlcohol"></activity>
 
     </application>
 
