@@ -29,8 +29,8 @@ public class BeforeConnectSelectActivity extends Activity {
         btnSelectLiquor = (Button) findViewById(R.id.btn_sel_liquor);
         btnSelectElse = (Button) findViewById(R.id.btn_sel_else);
 
+        
         // Button 클릭(기타 제외) -> SharedPreference 저장 후 기기 연결 페이지 이동
-        // 이거 안 되는데 수정하세요! 수정하고 블로그 올리세요!!
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +60,13 @@ public class BeforeConnectSelectActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "기기 연결로 갑시다!", Toast.LENGTH_SHORT).show();
             }
         };
+
+        btnSelectSoju.setOnClickListener(onClickListener);
+        btnSelectBeer.setOnClickListener(onClickListener);
+        btnSelectWine.setOnClickListener(onClickListener);
+        btnSelectMakkulli.setOnClickListener(onClickListener);
+        btnSelectLiquor.setOnClickListener(onClickListener);
+        btnSelectElse.setOnClickListener(onClickListener);
 
         // 기타 Button 클릭 -> 술 정보 입력 팝업 생성 후 입력하면 기기 연결 페이지 이동
         btnSelectElse.setOnClickListener(new View.OnClickListener() {
