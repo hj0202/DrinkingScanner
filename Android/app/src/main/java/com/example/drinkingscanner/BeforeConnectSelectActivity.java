@@ -56,7 +56,9 @@ public class BeforeConnectSelectActivity extends Activity {
                         Toast.makeText(getApplicationContext(), "양주 선택!", Toast.LENGTH_SHORT).show();
                         break;
                 }
-                // 기기 연결 화면으로 이동
+                // 여기에 기기 연결 페이지 이동문 작성하기.
+                Toast.makeText(getApplicationContext(), "기기 연결로 갑시다!", Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(getApplicationContext(), ConnectBluetooth.class);
                 startActivity(intent);
             }
