@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/user/AndroidStudioProjects/DrinkingScanner/app/src/main/res/drawable/background_splash.xml" value="0.35625" />
         <entry key="..\:/Users/user/AndroidStudioProjects/DrinkingScanner/app/src/main/res/layout/activity_register.xml" value="0.25" />
       </map>
     </option>
