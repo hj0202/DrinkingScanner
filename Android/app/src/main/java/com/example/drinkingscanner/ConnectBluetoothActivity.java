@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 
-public class ConnectBluetooth extends AppCompatActivity {
+public class ConnectBluetoothActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +60,7 @@ public class ConnectBluetooth extends AppCompatActivity {
                 else {
                     Log.d("BlueTooth", "장치 버튼 클릭");
                     Bluetooth.getInstance().connectDevice(click);
-                    Intent intent = new Intent(getApplicationContext(), DrinkingAlcohol.class);
+                    Intent intent = new Intent(getApplicationContext(), DrinkingAlcoholActivity.class);
                     startActivity(intent);
                 }
             }

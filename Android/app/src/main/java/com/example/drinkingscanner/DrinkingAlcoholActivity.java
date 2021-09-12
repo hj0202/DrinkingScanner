@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class DrinkingAlcohol extends AppCompatActivity {
+public class DrinkingAlcoholActivity extends AppCompatActivity {
     private String currentTime;         // 현재 시각
     private byte[] readBuffer;          //수신된 문자열을 저장하기 위한 버퍼
     private int readBufferPosition;     // 버퍼 내 문자 저장 위치
