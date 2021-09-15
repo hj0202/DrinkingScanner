@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="/apiserver/saveData" method="POST">
+<!--    {% csrf_token %}-->
+        <input name="user" type="text"/>
+        <input name="date" type="text"/>
+        <input name="data" type="text"/>
+        <input type="submit" value="save"/>
+    </form>
+
+    <form action="/apiserver/preData" method="GET">
+        <input name="user" type="text"/>
+        <input name="date" type="text"/>
+        <input type="submit" value="전처리"/>
+    </form>
+
+    <form action="/apiserver/toTimeWeight" method="GET">
+        <input name="user" type="text"/>
+        <input name="date" type="text"/>
+        <input type="submit" value="time-weight"/>
+    </form>
+
+    <form action="/apiserver/toTimeAmount" method="GET">
+        <input name="user" type="text"/>
+        <input name="date" type="text"/>
+        <input type="submit" value="time-amount"/>
+    </form>
+
+    <form action="/apiserver/survey" method="GET">
+        <input name="user" type="text" placeholder="name"/>
+        <input name="date" type="text" placeholder="date"/>
+        <input name="drunkenness" type="text" placeholder="drunkenness(1~10)"/>
+        <input name="satisfaction" type="text" placeholder="satisfaction(1~10)"/>
+        <br> Alcohol <br>
+        <input name="alcohol" type="radio" value="SOJU"/> Soju
+        <input name="alcohol" type="radio" value="BEER"/> Beer
+        <input name="alcohol" type="radio" value="LIQUOR"/> Liquor
+        <input name="alcohol" type="radio" value="MACKGEOLLI"/> Makgeolli
+        <input name="alcohol" type="radio" value="WINE"/> Wine
+        <br> Who <br>
+        <input name="who" type="radio" value="FAMILY"/> Family
+        <input name="who" type="radio" value="FRIEND"/> Friend
+        <input name="who" type="radio" value="SOMEONE"/> Someone
+        <input name="who" type="radio" value="BUSINESS"/> Business
+        <br>
+        <input name="money" type="text" placeholder="money"/>
+        <input type="submit" value="survey"/>
+    </form>
+
+    <form action="/apiserver/clearDB" method="GET">
+        <input type="submit" value="clearDB"/>
+    </form>
+
+</body>
+</html>
