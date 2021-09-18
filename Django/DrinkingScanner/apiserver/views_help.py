@@ -6,7 +6,7 @@ from apiserver.views_pre import pre, pre_time_weight
 from .models import AllData
 
 # 데이터 CSV 파일 저장 경로
-path = 'C:/Users/codnj/OneDrive/바탕 화면/졸업과제/DrinkingScanner/Django/csv/'
+path = 'C:/Users/codnj/Documents/Graduation_Project/DrinkingScanner/Django/csv/'
 
 # 원시 데이터 CSV 파일에 쓰기 (없으면 생성)
 def writeOriginCSV(user,date,data):
