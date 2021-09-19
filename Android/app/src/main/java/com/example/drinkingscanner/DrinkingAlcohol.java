@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ public class DrinkingAlcohol extends AppCompatActivity {
     private ArrayList<String> sendData; // 서버에 보낼 데이터 (60개)
 
     private TextView testText;          // 테스트용. 화면 구성 시 삭제바람
+    private Button stopSendButton;      // 데이터 수집 종료 버튼
 
     private RetrofitService service;    // 서버 통신 - 통신 함수를 가지고 있는 Retrofit 객체
     private Boolean sendDataState = true;       // 서버 통신 - sendData를 하고 있냐 안하고 있냐
@@ -43,6 +45,16 @@ public class DrinkingAlcohol extends AppCompatActivity {
         setContentView(R.layout.activity_drinking_alcohol);
 
         testText = (TextView)findViewById(R.id.textView);   // 테스트용
+        stopSendButton = (Button)findViewById(R.id.stopSendData);
+
+        // 데이터 수집 종료 버튼 이벤트
+        View.OnClickListener stopListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopSendData();
+            }
+        };
+        stopSendButton.setOnClickListener(stopListener);
 
         // 서버 통신 - Gson, Retrofit 객체 생성
         Gson gson = new GsonBuilder().setLenient().create();
@@ -70,7 +82,7 @@ public class DrinkingAlcohol extends AppCompatActivity {
         Thread workerThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while(!Thread.currentThread().isInterrupted()) {
+                while(!Thread.currentThread().isInterrupted()&&sendDataState) {
                     try {
                         int byteAvailable = Bluetooth.getInstance().inputStream.available();
 
@@ -93,9 +105,8 @@ public class DrinkingAlcohol extends AppCompatActivity {
                                         public void run() {
                                             String second = getSecond();
 
-                                            // TODO : Bluetooth 끊기면 밑에 stopSendData 함수 호출해서 sendDataState==false 되도록
                                             if (!currentTime.equals(second) && sendDataState==true) {
-                                                testText.append("[" + second);   // 테스트용
+                                                testText.append("[" + second);          // 테스트용
                                                 testText.append(text + "] ");           // 테스트용
 
                                                 sendData.add(text);
@@ -104,8 +115,10 @@ public class DrinkingAlcohol extends AppCompatActivity {
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
                                                     saveData(user,date,sendData);
 
-                                                    testText.setText("send data : ");  // 테스트용
-                                                    testText.append(user + " " + date + " " + sendData + "/n"); //테스트용
+                                                    testText.setText("send data : ");   // 테스트용
+                                                    testText.append(user + " " );       // 테스트용
+                                                    testText.append(date + " " );       // 테스트용
+                                                    testText.append(sendData + "/n");   // 테스트용
                                                     sendData.clear();
                                                 }
                                                 currentTime = second;
@@ -134,7 +147,7 @@ public class DrinkingAlcohol extends AppCompatActivity {
     }
 
     // 서버 통신 - (종료버튼을 누르거나 or 블루투스 끊기면) sendData 중단하고 preData 호출
-    public void stopSendData(View v) {
+    public void stopSendData() {
         sendDataState = false;
         preData(user,date);
         testText.setText("pre data : " + user + date + " -> ");  // 테스트용
