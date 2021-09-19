@@ -23,41 +23,15 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RegisterActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".RegisterActivity"></activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity"></activity>
 
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".BeforeConnectSelectActivity"></activity>
+        <activity android:name=".ConnectBluetoothActivity"></activity>
+        <activity android:name=".DrinkingAlcoholActivity"></activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".BeforeConnectSelectActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-
-        <activity android:name=".ReportActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".ConnectBluetooth"></activity>
-        <activity android:name=".DrinkingAlcohol"></activity>
+        <activity android:name=".ReportActivity"></activity>
 
     </application>
 
