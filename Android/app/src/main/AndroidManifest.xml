@@ -31,7 +31,7 @@
         <activity android:name=".ConnectBluetoothActivity"></activity>
         <activity android:name=".DrinkingAlcoholActivity"></activity>
 
-        <activity android:name=".ReportActivity"></activity>
+        <activity android:name=".ReportCalendarActivity"></activity>
 
     </application>
 
