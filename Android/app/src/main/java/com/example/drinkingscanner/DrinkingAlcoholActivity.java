@@ -59,7 +59,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         // 서버 통신 - Gson, Retrofit 객체 생성
         Gson gson = new GsonBuilder().setLenient().create();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.172.63:8000/apiserver/")
+                .baseUrl("http://172.21.152.63:8000/apiserver/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         service = retrofit.create(RetrofitService.class);
@@ -76,7 +76,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         currentTime = getSecond();
         readBuffer = new byte[1024];
         readBufferPosition = 0;
-        sendData = new ArrayList<>();
+        sendData = new ArrayList<String>();
 
         // 데이터를 수신하기 위한 쓰레드 생성
         Thread workerThread = new Thread(new Runnable() {
@@ -97,7 +97,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
                                     byte[] encodedBytes = new byte[readBufferPosition];
                                     System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
 
-                                    final String text = new String(encodedBytes, "US-ASCII");
+                                    final String[] text = {new String(encodedBytes, "US-ASCII")};
                                     readBufferPosition = 0;
 
                                     handler.post(new Runnable() {
@@ -107,9 +107,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
 
                                             if (!currentTime.equals(second) && sendDataState==true) {
                                                 testText.append("[" + second);          // 테스트용
-                                                testText.append(text + "] ");           // 테스트용
+                                                testText.append(text[0] + "] ");           // 테스트용
 
-                                                sendData.add(text);
+                                                //Integer value = Integer.parseInt(text[0].substring(1)); //숫자로 변경
+                                                sendData.add(text[0].substring(1));
 
                                                 if (sendData.size() == 10) {
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
@@ -150,18 +151,21 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     public void stopSendData() {
         sendDataState = false;
         preData(user,date);
-        testText.setText("pre data : " + user + date + " -> ");  // 테스트용
+        testText.setText("start pre data : "+user+date);  // 테스트용
     }
 
     // 서버 통신 - 서버로 saveData 요청
     private void saveData(String user, String date, ArrayList<String> data) {
-        Log.d("Tag","saveData: " + user + date + data.toString() + "\n"); // 디버그
+
+        String[] values = data.toArray(new String[0]); // List를 Array로 변경
 
         // 요청시 보내는 데이터
         HashMap<String,Object> hm = new HashMap<>();
         hm.put("user",user);
         hm.put("date",date);
         hm.put("data",data);
+
+        Log.d("Server Reqeust","데이터 저장 : "+hm.toString() + "\n");
         Call<ServerResult> call = service.saveData(hm);
 
         // 비동기 처리
@@ -191,7 +195,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     // 서버 통신 - 서버로 preData 요청
     private void preData(String user, String date) {
         // 디버그
-        Log.d("Tag","preData: " + user + date + "\n");
+        Log.d("Server Request","데이터 전처리 : " + user + date + "\n");
 
         // 요청시 보내는 데이터
         Call<ServerResult> call = service.preData(user,date);

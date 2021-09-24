@@ -1,6 +1,8 @@
 // 서버 통신
 package com.example.drinkingscanner;
 
+import com.google.gson.annotations.JsonAdapter;
+
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -13,7 +15,6 @@ import retrofit2.http.Query;
 public interface RetrofitService {
     @FormUrlEncoded
     @POST("saveData")
-        //Call<Result> saveData(@Body PostRequest pr);
     Call<ServerResult> saveData(@FieldMap HashMap<String,Object> hm);
 
     @GET("preData")

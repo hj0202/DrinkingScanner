@@ -18,8 +18,8 @@ def saveData(request):
         date = request.POST['date']
         data = request.POST['data']
 
-        data = [[13],[14],[13],[13],[-11],[-49],[-50],[-51],[-52],[0],[1],[1],[1],[5],[9],[13],[30],[46],[46],[47],[-11],[-49],[-50],[-51],[-52],[13],[14],[13],[13],[-11],[-49],[-50],[-51],[-52],[0],[0],[0],[0],[-11],[-49],[-50],[-51],[-52]]
-
+        data = makeTwoDimension(data)
+       
         # 처리
         file = writeOriginCSV(user,date,data)
         file.close()
@@ -59,7 +59,7 @@ def preData(request):
             savePreToDB(user,date,df)
 
         # 응답
-        if existPreCSV(user, date) and AllData.objects.filter(user=user, date=date).exists() == True:
+        if existPreCSV(user, date) and (df.shape[0]==0 or AllData.objects.filter(user=user, date=date).exists() == True):
             result = dict()
             result['status'] = 'success'
             return JsonResponse(result, status=200)
