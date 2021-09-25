@@ -25,7 +25,7 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_report_calendar);
         initWidgets();
         selectedDate = LocalDate.now();
         setMonthView();
