@@ -1,5 +1,6 @@
 package com.example.drinkingscanner;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,9 @@ class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
     public void onBindViewHolder(@NonNull CalendarViewHolder holder, int position)
     {
         holder.dayOfMonth.setText(dayOfMonth.get(position));
+
+        if (dayOfMonth.get(position) != "") // warning : null != ""
+            holder.iconNoDrink.setVisibility(View.VISIBLE);
     }
 
     @Override
