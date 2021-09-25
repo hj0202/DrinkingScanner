@@ -18,7 +18,11 @@ public interface RetrofitService {
     Call<ServerResult> saveData(@FieldMap HashMap<String,Object> hm);
 
     @GET("preData")
-    Call<ServerResult> preData(@Query("user") String user, @Query("date") String date);
+    Call<ServerResult> preData(@Query("user") String user, @Query("date") String date, @Query("bestSpeed") Integer bestSpeed);
+
+    @FormUrlEncoded
+    @POST("syncData")
+    Call<ServerSyncResult> syncData(@FieldMap HashMap<String,Object> hm);
 
     @GET("toTimeWeight")
     Call<ServerXYResult> toTimeWeight(@Query("user") String user, @Query("date") String date);

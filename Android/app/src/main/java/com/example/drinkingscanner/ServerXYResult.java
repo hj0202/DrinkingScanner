@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 // {
-// 'status': 'success'
+// 'status': 'success' or 'request error' or 'result error'
 // 'x' : [1,2,3,4,5]
 // 'y' : [10,20,30,40,50]
 // }
