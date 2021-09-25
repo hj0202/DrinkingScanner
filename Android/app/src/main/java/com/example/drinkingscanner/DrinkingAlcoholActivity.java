@@ -37,7 +37,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
 
     private RetrofitService service;    // 서버 통신 - 통신 함수를 가지고 있는 Retrofit 객체
     private Boolean sendDataState = true;       // 서버 통신 - sendData를 하고 있냐 안하고 있냐
-    String user,date;                           // 서버 통신 - user,date
+    private String user,date;           // 서버 통신 - user,date
+    private Integer syncTime = 5;      // 서버 통신 - 동기화 함수 간격
+    private Integer beforeAmount;       // 서버 통신 - 동기화 함수 이전 값
+    private Integer bestSpeed;          // 서버 통신 - 동기화 함수 최고 속도
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +62,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         // 서버 통신 - Gson, Retrofit 객체 생성
         Gson gson = new GsonBuilder().setLenient().create();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.172.63:8000/apiserver/")
+                .baseUrl("http://172.21.152.63:8000/apiserver/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         service = retrofit.create(RetrofitService.class);
@@ -67,6 +70,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         // 서버 통신 - user,date
         user = getUser();
         date = getDate();
+        // 서버 통신 - 이전 누적량, 최고 속도 저장
+        beforeAmount = 0;
+        bestSpeed = 0;
+
         receiveData();
     }
 
@@ -106,14 +113,20 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
                                             String second = getSecond();
 
                                             if (!currentTime.equals(second) && sendDataState==true) {
-                                                testText.append("[" + second);          // 테스트용
-                                                testText.append(text + "] ");           // 테스트용
-
+                                                testText.append("[" + second + "s,");          // 테스트용
+                                                testText.append(text + "ml] ");           // 테스트용
+                                                // 서버 통신 - 데이터 쌓기
                                                 sendData.add(text);
 
-                                                if (sendData.size() == 10) {
+                                                if (sendData.size() == 5) {
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
                                                     saveData(user,date,sendData);
+                                                    // 서버 통신 - 누적량, 속도 위험도 체크를 위한 동기화
+                                                    syncTime = syncTime-1;
+                                                    if(syncTime == 0) {
+                                                        syncData(user,date);
+                                                        syncTime = 10;
+                                                    }
 
                                                     testText.setText("send data : ");   // 테스트용
                                                     testText.append(user + " " );       // 테스트용
@@ -150,18 +163,21 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     public void stopSendData() {
         sendDataState = false;
         preData(user,date);
-        testText.setText("pre data : " + user + date + " -> ");  // 테스트용
+        testText.setText("start pre data : "+user+date);  // 테스트용
     }
 
     // 서버 통신 - 서버로 saveData 요청
     private void saveData(String user, String date, ArrayList<String> data) {
-        Log.d("Tag","saveData: " + user + date + data.toString() + "\n"); // 디버그
+
+        String[] values = data.toArray(new String[0]); // List를 Array로 변경
 
         // 요청시 보내는 데이터
         HashMap<String,Object> hm = new HashMap<>();
         hm.put("user",user);
         hm.put("date",date);
         hm.put("data",data);
+
+        Log.d("Server Reqeust","데이터 저장 : "+hm.toString() + "\n");
         Call<ServerResult> call = service.saveData(hm);
 
         // 비동기 처리
@@ -191,10 +207,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     // 서버 통신 - 서버로 preData 요청
     private void preData(String user, String date) {
         // 디버그
-        Log.d("Tag","preData: " + user + date + "\n");
+        Log.d("Server Request","데이터 전처리 : " + user + date + "\n");
 
-        // 요청시 보내는 데이터
-        Call<ServerResult> call = service.preData(user,date);
+        // 요청시 보내는 데이터 (최고 속도도 함께 보내준다)
+        Call<ServerResult> call = service.preData(user,date,bestSpeed);
 
         // 비동기 처리
         call.enqueue(new Callback<ServerResult>() {
@@ -219,6 +235,54 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
             }
         });
     }
+
+    // 서버 통신 - 서버로 syncData 요청
+    private void syncData(String user, String date) {
+
+        HashMap<String,Object> hm = new HashMap<>();
+        hm.put("user",user);
+        hm.put("date",date);
+        hm.put("beforeAmount",beforeAmount);
+        hm.put("bestSpeed",bestSpeed);
+
+        Log.d("Server Reqeust","데이터 동기화 : "+user+date+beforeAmount+bestSpeed+"\n");
+        Call<ServerSyncResult> call = service.syncData(hm);
+
+        // 비동기 처리
+        call.enqueue(new Callback<ServerSyncResult>() {
+            @Override
+            public void onResponse(Call<ServerSyncResult> call, Response<ServerSyncResult> response) {
+                if(!response.isSuccessful()) {
+                    //테스트용
+                    testText.append("\n On Response Error {" +
+                            "code: " + response.code() + ", " +
+                            "status: " + response.body().getStatus() + ", " +
+                            "BeforeAmount: " + response.body().getBeforeAmount() + ", " +
+                            "BestSpeed: " + response.body().getBestSpeed() + "}\n");
+
+                    // 이전 누적 량, 최고 속도 저장
+                    beforeAmount = response.body().getBeforeAmount();
+                    bestSpeed = response.body().getBestSpeed();
+
+                    //위험 알림
+                    if(response.body().getStatus() == "danger")
+                        Log.d("ServerReqeust","Danger!!!");
+
+                    return;
+                }
+
+                testText.append("\n On Response {" +
+                        "code: " + response.code() + ", " +
+                        "status: " + response.body().getStatus() + "}\n");
+            }
+
+            @Override
+            public void onFailure(Call<ServerSyncResult> call, Throwable t) {
+                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
+            }
+        });
+    }
+
 
     String getSecond() {
         long now = System.currentTimeMillis();

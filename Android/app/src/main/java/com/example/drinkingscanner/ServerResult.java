@@ -3,7 +3,7 @@ package com.example.drinkingscanner;
 
 import com.google.gson.annotations.SerializedName;
 
-// {'status': 'success' or 'error'}
+// {'status': 'success' or 'request error' or 'result error'}
 
 public class ServerResult {
     @SerializedName("status")

@@ -135,18 +135,20 @@ def up_information(user,date):
     return df
 
 # 가공 데이터 DB에 저장
-def savePreToDB(user,date,df):
-    data = AllData()
-    data.user = user
-    data.date = date
-    data.amount = df.loc[df.shape[0]-1,'accumAmount']
-    if data.amount==-999: data.amount = df.loc[df.shape[0]-2,'accumAmount']
-    data.time = 60
-    data.maxSpeed = 30
-    data.meanSpeed = 15
-    data.save()
-    print('Record Count : ', AllData.objects.filter(user=user, date=date).count())
-    print('DB : ',AllData.objects.all().values())
+def savePreToDB(user,date,df,bestSpeed):
+    if df.shape[0] !=0:
+        data = AllData()
+        data.user = user
+        data.date = date
+        data.amount = df.loc[df.shape[0]-1,'accumAmount']
+        if data.amount == -999 and df.shape[0] == 1: data.amount = 0
+        if data.amount == -999: data.amount = df.loc[df.shape[0]-2,'accumAmount']
+        data.time = df.loc[df.shape[0]-1,'endTime'] - df.loc[0,'startTime']
+        data.maxSpeed = bestSpeed
+        data.meanSpeed = data.amount / data.time
+        data.save()
+        print('Record Count : ', AllData.objects.filter(user=user, date=date).count())
+        print('DB : ',AllData.objects.all().values())
 
 # 설문 데이터 DB에 저장
 def saveSurveyToDB(user, date, request):
@@ -161,3 +163,22 @@ def saveSurveyToDB(user, date, request):
     data.save()
     print('Record Count : ', AllData.objects.filter(user=user, date=date).count())
     print('DB : ',AllData.objects.all().values())
+
+# CSV 저장 위해서 1차원 리스트에서 2차원 리스트로 변경
+def makeTwoDimension(list_1d):
+    list_2d = []
+    for i in range(0,len(list_1d)):
+        temp = []
+        temp.append(list_1d[i])
+        list_2d.append(temp)
+    print("1D -> 2D : ",list_2d)
+    return list_2d
+
+# 중간중간 권장량이 넘는지 계속해서 체크
+def checkDanger(type,value,user):
+    # userinfo = UserInfo.objects.get(user=user)
+    if type == 'amount_medium_check' and value > 100:
+        return True
+    if type == 'speed_end_check' and value > 10:
+        return True
+    return False

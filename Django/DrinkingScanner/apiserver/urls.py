@@ -5,6 +5,7 @@ urlpatterns = [
     path('',views.test),
     path('saveData',views.saveData),
     path('preData',views.preData),
+    path('syncData',views.syncData),
     path('toTimeWeight',views.toTimeWeight),
     path('toTimeAmount', views.toTimeAmount),
     path('survey', views.survey),

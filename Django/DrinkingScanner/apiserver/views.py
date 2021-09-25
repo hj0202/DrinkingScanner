@@ -4,6 +4,7 @@ from apiserver.views_help import *
 from apiserver.views_pre import pre_time_weight
 from django.views.decorators.csrf import csrf_exempt
 from .models import AllData
+import ast
 
 # Test Page
 def test(request):
@@ -18,8 +19,9 @@ def saveData(request):
         date = request.POST['date']
         data = request.POST['data']
 
-        data = [[13],[14],[13],[13],[-11],[-49],[-50],[-51],[-52],[0],[1],[1],[1],[5],[9],[13],[30],[46],[46],[47],[-11],[-49],[-50],[-51],[-52],[13],[14],[13],[13],[-11],[-49],[-50],[-51],[-52],[0],[0],[0],[0],[-11],[-49],[-50],[-51],[-52]]
-
+        data = ast.literal_eval(data)
+        data = makeTwoDimension(data)
+       
         # 처리
         file = writeOriginCSV(user,date,data)
         file.close()
@@ -48,6 +50,9 @@ def preData(request):
     # 요청 데이터
     user = request.GET['user']
     date = request.GET['date']
+    bestSpeed = int(request.GET['bestSpeed'])
+
+    danger = False
 
     if existOriginCSV(user, date):
         # 처리
@@ -56,12 +61,20 @@ def preData(request):
 
         # DB 저장
         if AllData.objects.filter(user=user, date=date).exists() == False:
-            savePreToDB(user,date,df)
+            savePreToDB(user,date,df,bestSpeed)
+
+        # 속도 위험도 CHECK
+        danger = checkDanger('speed_end_check', bestSpeed, user)
+
 
         # 응답
-        if existPreCSV(user, date) and AllData.objects.filter(user=user, date=date).exists() == True:
+        if existPreCSV(user, date) and (df.shape[0]==0 or AllData.objects.filter(user=user, date=date).exists() == True):
             result = dict()
-            result['status'] = 'success'
+            if danger == True:
+                result['status'] = 'danger'
+            else:
+                result['status'] = 'no danger'
+           
             return JsonResponse(result, status=200)
             #return render(request, 'apiserver/result.html',{'result': result})
         else:
@@ -74,6 +87,63 @@ def preData(request):
         result['status'] = 'request error'
         return JsonResponse(result, status=203)
         #return render(request, 'apiserver/result.html', {'result': result})
+
+# 누적량, 속도 위험도 체크를 위한 동기화
+@csrf_exempt
+def syncData(request):
+    if request.method == 'POST':
+        # 요청 데이터
+        user = request.POST['user']
+        date = request.POST['date']
+        beforeAmount = int(request.POST['beforeAmount'])
+        bestSpeed = int(request.POST['bestSpeed'])
+
+        danger = False
+
+        if existOriginCSV(user, date):
+            df = up_information(user, date)
+
+            if (df.shape[0] != 0 and df.loc[df.shape[0] - 1, 'accumAmount'] != -999) or (df.shape[0]-1 != 0):
+                # 현재 누적량
+                nowAmount = df.loc[df.shape[0] - 1, 'accumAmount']
+                if nowAmount == -999: nowAmount = df.loc[df.shape[0] - 2, 'accumAmount']
+                print(nowAmount)
+
+                # 속도 계산 (10분 = 600초)
+                nowSpeed = (nowAmount - beforeAmount) / 100
+                print(nowSpeed)
+
+                # 누적량 위험도 CHECK
+                danger = checkDanger('amount_medium_check',nowAmount,user)
+
+            # 응답 전 누적 량, 최고 속도 조정
+            NA = []
+            NA.append(nowAmount)
+            BS = []
+            if bestSpeed < nowSpeed:
+                BS.append(nowSpeed)
+            else:
+                BS.append(bestSpeed)
+
+            # 응답
+            result = dict()
+
+            if danger == True:
+                result['status'] = 'danger'
+            else:
+                result['status'] = 'no danger'
+
+            result['beforeAmount'] = NA
+            result['bestSpeed'] = BS
+
+            return JsonResponse(result, status=200)
+
+    result = dict()
+    result['status'] = 'request error'
+    result['beforeAmount'] = []
+    result['bestSpeed'] = []
+    return JsonResponse(result, status=203)
+
 
 # 원시데이터 -> 시간(X) 무게(Y)
 def toTimeWeight(request):
