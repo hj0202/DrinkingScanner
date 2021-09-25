@@ -33,9 +33,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
         }
-        // 의문점 : 해당 페이지로 갔다가 뒤로 넘겼을 때 해당 페이지로 다시 넘어오는 거 어떻게 구현하지?
-        // 이거 그대로 생성하고 끝내 버리면 계속 화면 생성된 채로 있는 거니까 최적화가 안 되는 거 아님?
-        // -> 일단 구현부터 하고 생각하겠음.
+
         // Button 클릭 -> 새 액티비티(ConnectActivity) 생성
         btnMoveConnect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,10 +47,12 @@ public class MainActivity extends AppCompatActivity {
         btnMoveReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "당신의 음주 습관 액티비티를 띄웁니다.", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(getApplicationContext(), ReportActivity.class);
-                //tartActivity(intent);
-            }
+                Intent intent = new Intent(getApplicationContext(), ReportCalendarActivity.class);
+                startActivity(intent);            }
         });
     }
 }
+
+// btnMove~ 의문점 : 해당 페이지로 갔다가 뒤로 넘겼을 때 해당 페이지로 다시 넘어오는 거 어떻게 구현하지?
+// 이거 그대로 생성하고 끝내 버리면 계속 화면 생성된 채로 있는 거니까 최적화가 안 되는 거 아님?
+// -> 일단 구현부터 하고 생각하겠음.
