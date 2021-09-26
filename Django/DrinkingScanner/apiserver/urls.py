@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     path('',views.test),
+    path('register',views.register),
     path('saveData',views.saveData),
     path('preData',views.preData),
     path('syncData',views.syncData),

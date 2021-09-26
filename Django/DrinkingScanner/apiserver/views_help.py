@@ -3,7 +3,7 @@ import numpy as np
 import csv
 import os
 from apiserver.views_pre import pre, pre_time_weight
-from .models import AllData
+from .models import AllData,UserInfo
 
 # 데이터 CSV 파일 저장 경로
 path = 'C:/Users/codnj/Documents/Graduation_Project/DrinkingScanner/Django/csv/'
@@ -176,9 +176,9 @@ def makeTwoDimension(list_1d):
 
 # 중간중간 권장량이 넘는지 계속해서 체크
 def checkDanger(type,value,user):
-    # userinfo = UserInfo.objects.get(user=user)
+    userinfo = UserInfo.objects.get(user=user)
     if type == 'amount_medium_check' and value > 100:
         return True
-    if type == 'speed_end_check' and value > 10:
+    if type == 'speed_end_check' and value > userinfo.sojuAbility:
         return True
     return False
