@@ -38,3 +38,7 @@ class AllData(models.Model):
     who = models.CharField(blank=True, max_length=10)
 
     surveyCheck = models.BooleanField(default=False)
+
+class UserInfo(models.Model):
+    user = models.CharField(max_length=10)
+    sojuAbility = models.IntegerField()

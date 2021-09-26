@@ -122,11 +122,11 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
                                                     saveData(user,date,sendData);
                                                     // 서버 통신 - 누적량, 속도 위험도 체크를 위한 동기화
-                                                    syncTime = syncTime-1;
-                                                    if(syncTime == 0) {
-                                                        syncData(user,date);
-                                                        syncTime = 10;
-                                                    }
+                                                    // syncTime = syncTime-1;
+                                                    // if(syncTime == 0) {
+                                                    //     syncData(user,date);
+                                                    //     syncTime = 10;
+                                                    // }
 
                                                     testText.setText("send data : ");   // 테스트용
                                                     testText.append(user + " " );       // 테스트용

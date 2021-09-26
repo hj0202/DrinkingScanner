@@ -24,6 +24,14 @@ public interface RetrofitService {
     @POST("syncData")
     Call<ServerSyncResult> syncData(@FieldMap HashMap<String,Object> hm);
 
+    @FormUrlEncoded
+    @POST("register")
+    Call<ServerResult> register(@FieldMap HashMap<String,Object> hm);
+
+    @FormUrlEncoded
+    @POST("survey")
+    Call<ServerResult> survey(@FieldMap HashMap<String,Object> hm);
+
     @GET("toTimeWeight")
     Call<ServerXYResult> toTimeWeight(@Query("user") String user, @Query("date") String date);
 

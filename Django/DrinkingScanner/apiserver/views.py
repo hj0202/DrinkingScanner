@@ -3,12 +3,45 @@ from django.http import JsonResponse
 from apiserver.views_help import *
 from apiserver.views_pre import pre_time_weight
 from django.views.decorators.csrf import csrf_exempt
-from .models import AllData
+from .models import AllData,UserInfo
 import ast
 
 # Test Page
 def test(request):
     return render(request, 'apiserver/test.html')
+
+# 앱 처음에 사용자 등록
+@csrf_exempt
+def register(request):
+    if request.method == 'POST':
+        # 요청 데이터
+        user = request.POST['user']
+        ability = request.POST['ability']
+
+        print(user,ability)
+
+        # 처리
+        if UserInfo.objects.filter(user=user).count()==0:
+            data = UserInfo()
+            data.user = user
+            data.sojuAbility = ability
+            data.save()
+            print('DB : ',UserInfo.objects.all().values()) 
+
+        # 응답
+        if UserInfo.objects.filter(user=user).count()==1:
+            result = dict()
+            result['status'] = 'success'
+            return JsonResponse(result, status=200)
+        else:
+            result = dict()
+            result['status'] = 'result error'
+            return JsonResponse(result, status=203)
+
+    else:
+        result = dict()
+        result['status'] = 'request error'
+        return JsonResponse(result, status=203)
 
 # 안드로이드에서 들어오는 원시데이터 -> CSV 파일로 저장
 @csrf_exempt
@@ -103,7 +136,7 @@ def syncData(request):
         if existOriginCSV(user, date):
             df = up_information(user, date)
 
-            if (df.shape[0] != 0 and df.loc[df.shape[0] - 1, 'accumAmount'] != -999) or (df.shape[0]-1 != 0):
+            if (df.shape[0] != 0 and df.loc[df.shape[0] - 1, 'accumAmount'] != -999) or (df.shape[0]-1 >= 0):
                 # 현재 누적량
                 nowAmount = df.loc[df.shape[0] - 1, 'accumAmount']
                 if nowAmount == -999: nowAmount = df.loc[df.shape[0] - 2, 'accumAmount']
