@@ -48,8 +48,7 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
-        YearMonth yearMonth = null;
-        yearMonth = YearMonth.from(date);
+        YearMonth yearMonth = YearMonth.from(date);
 
         int daysInMonth = yearMonth.lengthOfMonth();
 
