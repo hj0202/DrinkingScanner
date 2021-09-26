@@ -48,8 +48,7 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
 
     private ArrayList<String> daysInMonthArray(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
-        YearMonth yearMonth = null;
-        yearMonth = YearMonth.from(date);
+        YearMonth yearMonth = YearMonth.from(date);
 
         int daysInMonth = yearMonth.lengthOfMonth();
 
@@ -87,7 +86,7 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
 
     @Override
     public void onItemClick(int position, String dayText) {
-        if(dayText.equals(""))
+        if(!dayText.equals(""))
         {
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
