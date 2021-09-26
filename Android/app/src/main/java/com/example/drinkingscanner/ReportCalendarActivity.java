@@ -86,7 +86,7 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
 
     @Override
     public void onItemClick(int position, String dayText) {
-        if(dayText.equals(""))
+        if(!dayText.equals(""))
         {
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
