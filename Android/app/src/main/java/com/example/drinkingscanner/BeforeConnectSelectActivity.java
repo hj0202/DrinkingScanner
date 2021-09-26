@@ -2,7 +2,9 @@ package com.example.drinkingscanner;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -34,26 +36,33 @@ public class BeforeConnectSelectActivity extends Activity {
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("Survey", "Click");
                 // SharedPreference 변수 선언
                 switch (v.getId()){
                     case R.id.btn_sel_soju:
                         Toast.makeText(getApplicationContext(), "소주 선택!", Toast.LENGTH_SHORT).show();
+                        SetSharedPreference("Soju");
                         break;
 
                     case R.id.btn_sel_beer:
                         Toast.makeText(getApplicationContext(), "맥주 선택!", Toast.LENGTH_SHORT).show();
+                        SetSharedPreference("Beer");
                         break;
 
                     case R.id.btn_sel_wine:
                         Toast.makeText(getApplicationContext(), "와인 선택!", Toast.LENGTH_SHORT).show();
+                        SetSharedPreference("Wine");
+
                         break;
 
                     case R.id.btn_sel_makkulli:
                         Toast.makeText(getApplicationContext(), "막걸리 선택!", Toast.LENGTH_SHORT).show();
+                        SetSharedPreference("Makgeolli");
                         break;
 
                     case R.id.btn_sel_liquor:
                         Toast.makeText(getApplicationContext(), "양주 선택!", Toast.LENGTH_SHORT).show();
+                        SetSharedPreference("Liquor");
                         break;
                 }
                 // 기기 연결 화면으로 이동
@@ -76,5 +85,12 @@ public class BeforeConnectSelectActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "팝업 입력 후, 기기 연결로 갑시다!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void SetSharedPreference(String value) {
+        SharedPreferences sharedPreferences = getSharedPreferences("file", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("주종", value);
+        editor.commit();
     }
 }
