@@ -1,5 +1,6 @@
 package com.example.drinkingscanner;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,6 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
 public class DrinkingAlcoholActivity extends AppCompatActivity{
     private String currentTime;         // 현재 시각
@@ -70,6 +70,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         // 서버 통신 - user,date
         user = getUser();
         date = getDate();
+
         // 서버 통신 - 이전 누적량, 최고 속도 저장
         beforeAmount = 0;
         bestSpeed = 0;
@@ -163,6 +164,8 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
     public void stopSendData() {
         sendDataState = false;
         preData(user,date);
+        Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
+        startActivity(intent);
         testText.setText("start pre data : "+user+date);  // 테스트용
     }
 
@@ -283,38 +286,18 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         });
     }
 
-    // 서버 통신 - 서버로 survey 요청
-    public void survey(String user,HashMap<String,Object> hm) {
-        // 디버그
-        Log.d("Server Request","사용자 정보 등록 : " + user + hm + "\n");
+    // 서버 통신 - 사용자 이름 구하기
+    public String getUser() {
+        SharedPreferences sharedPreferences = getSharedPreferences("file", MODE_PRIVATE);
+        return sharedPreferences.getString("닉네임","");
+    }
 
-        // 요청시 보내는 데이터
-        hm.put("user",user);
-        hm.put("date",date);
-
-        Call<ServerResult> call = service.survey(hm);
-
-        // 비동기 처리
-        call.enqueue(new Callback<ServerResult>() {
-            @Override
-            public void onResponse(Call<ServerResult> call, Response<ServerResult> response) {
-                if(!response.isSuccessful()) {
-                    testText.append("On Response Error {" +
-                            "code: " + response.code() + ", " +
-                            "status: " + response.body().getStatus() + "}\n");
-                    return;
-                }
-
-                String resultString = "On Response {" +
-                        "code: " + response.code() + ", " +
-                        "status: " + response.body().getStatus() + "}\n";
-                testText.setText(resultString);
-            }
-            @Override
-            public void onFailure(Call<ServerResult> call, Throwable t) {
-                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
-            }
-        });
+    //서버 통신 - 오늘 날짜 구하기
+    public String getDate() {
+        long now = System.currentTimeMillis();
+        Date myDate = new Date(now);
+        SimpleDateFormat myFormat = new SimpleDateFormat("MMdd");
+        return myFormat.format(myDate);
     }
 
     String getSecond() {
@@ -323,19 +306,5 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         SimpleDateFormat dataFormat = new SimpleDateFormat("ss");
 
         return dataFormat.format(date);
-    }
-
-    // 서버 통신 - 사용자 이름 구하기
-    String getUser() {
-        SharedPreferences sharedPreferences = getSharedPreferences("file", MODE_PRIVATE);
-        return sharedPreferences.getString("닉네임","");
-    }
-
-    //서버 통신 - 오늘 날짜 구하기
-    String getDate() {
-        long now = System.currentTimeMillis();
-        Date myDate = new Date(now);
-        SimpleDateFormat myFormat = new SimpleDateFormat("MMdd");
-        return myFormat.format(myDate);
     }
 }

@@ -242,32 +242,34 @@ def toTimeAmount(request):
         # return render(request, 'apiserver/result.html', {'result': result})
 
 
+@csrf_exempt
 # 사용자가 설문 작성
 def survey(request):
-    # 요청 데이터
-    user = request.GET['user']
-    date = request.GET['date']
+    if request.method == 'POST':
+        # 요청 데이터
+        user = request.POST['user']
+        date = request.POST['date']
+        print(user+date)
+        print('count',AllData.objects.filter(user=user, date=date).count())
+        if AllData.objects.filter(user=user, date=date).count() == 1:
+            # DB 저장
+            saveSurveyToDB(user,date,request)
 
-    if AllData.objects.filter(user=user, date=date).count() == 1:
-        # DB 저장
-        saveSurveyToDB(user,date,request)
-
-        # 응답
-        if AllData.objects.filter(user=user, date=date).first().surveyCheck == True:
-            result = dict()
-            result['status'] = 'success'
-            return JsonResponse(result, status=200)
-            # return render(request, 'apiserver/result.html', {'result': result})
-        else:
-            result = dict()
-            result['status'] = 'result error'
-            return JsonResponse(result, status=203)
-            # return render(request, 'apiserver/result.html', {'result': result})
-    else:
-        result = dict()
-        result['status'] = 'request error'
-        return JsonResponse(result, status=203)
-        # return render(request, 'apiserver/result.html', {'result': result})
+            # 응답
+            if AllData.objects.filter(user=user, date=date).first().surveyCheck == True:
+                result = dict()
+                result['status'] = 'success'
+                return JsonResponse(result, status=200)
+                # return render(request, 'apiserver/result.html', {'result': result})
+            else:
+                result = dict()
+                result['status'] = 'result error'
+                return JsonResponse(result, status=203)
+                # return render(request, 'apiserver/result.html', {'result': result})
+    
+    result = dict()
+    result['status'] = 'request error'
+    return JsonResponse(result, status=203)
 
 def clearDB(request):
     alldata = AllData.objects.all()
