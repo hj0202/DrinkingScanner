@@ -154,11 +154,11 @@ def savePreToDB(user,date,df,bestSpeed):
 def saveSurveyToDB(user, date, request):
     data = AllData.objects.get(user=user, date=date)
     # data = AllData.objects.filter(user=user, date=date).first()
-    data.drunkenness = int(request.GET['drunkenness'])
-    data.satisfaction = int(request.GET['satisfaction'])
-    data.alcohol = request.GET['alcohol']
-    data.who = request.GET['who']
-    data.money = int(request.GET['money'])
+    data.drunkenness = int(request.POST['drunkenness'])
+    data.satisfaction = int(request.POST['satisfaction'])
+    data.alcohol = request.POST['alcohol']
+    data.who = request.POST['who']
+    data.money = int(request.POST['money'])
     data.surveyCheck = True
     data.save()
     print('Record Count : ', AllData.objects.filter(user=user, date=date).count())

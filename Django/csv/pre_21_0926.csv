@@ -1,0 +1,6 @@
+,index,startTime,endTime,holdingTime,interval,changeAmount,accumAmount,drink
+0,0,8,8,-888,-888,90.0,0,False
+1,1,17,25,8,17,-37.0,37,True
+2,2,37,41,4,12,36.0,37,False
+3,3,48,48,-888,-888,-11.400000000000006,37,False
+4,4,54,54,0,13,-999.0,-999,
