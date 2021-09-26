@@ -11,9 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,9 +21,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class DrinkingAlcoholActivity extends AppCompatActivity {
+public class DrinkingAlcoholActivity extends AppCompatActivity{
     private String currentTime;         // 현재 시각
     private byte[] readBuffer;          //수신된 문자열을 저장하기 위한 버퍼
     private int readBufferPosition;     // 버퍼 내 문자 저장 위치
@@ -41,6 +37,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     private Integer syncTime = 5;      // 서버 통신 - 동기화 함수 간격
     private Integer beforeAmount;       // 서버 통신 - 동기화 함수 이전 값
     private Integer bestSpeed;          // 서버 통신 - 동기화 함수 최고 속도
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,12 +57,15 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         stopSendButton.setOnClickListener(stopListener);
 
         // 서버 통신 - Gson, Retrofit 객체 생성
-        Gson gson = new GsonBuilder().setLenient().create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://172.21.152.63:8000/apiserver/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        service = retrofit.create(RetrofitService.class);
+//        Gson gson = new GsonBuilder().setLenient().create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("http://172.21.152.63:8000/apiserver/")
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//        service = retrofit.create(RetrofitService.class);
+
+        //서버 통신 - 통신에 필요한 Retrofit Service 생성 (RetrofitConnection 이용)
+        service = RetrofitConnection.getInstance().getService();
 
         // 서버 통신 - user,date
         user = getUser();
@@ -122,11 +122,11 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
                                                     saveData(user,date,sendData);
                                                     // 서버 통신 - 누적량, 속도 위험도 체크를 위한 동기화
-                                                    // syncTime = syncTime-1;
-                                                    // if(syncTime == 0) {
-                                                    //     syncData(user,date);
-                                                    //     syncTime = 10;
-                                                    // }
+//                                                    syncTime = syncTime-1;
+//                                                    if(syncTime == 0) {
+//                                                        syncData(user,date);
+//                                                        syncTime = 10;
+//                                                    }
 
                                                     testText.setText("send data : ");   // 테스트용
                                                     testText.append(user + " " );       // 테스트용
@@ -167,7 +167,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     }
 
     // 서버 통신 - 서버로 saveData 요청
-    private void saveData(String user, String date, ArrayList<String> data) {
+    public void saveData(String user, String date, ArrayList<String> data) {
 
         String[] values = data.toArray(new String[0]); // List를 Array로 변경
 
@@ -205,7 +205,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     }
 
     // 서버 통신 - 서버로 preData 요청
-    private void preData(String user, String date) {
+    public void preData(String user, String date) {
         // 디버그
         Log.d("Server Request","데이터 전처리 : " + user + date + "\n");
 
@@ -237,7 +237,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
     }
 
     // 서버 통신 - 서버로 syncData 요청
-    private void syncData(String user, String date) {
+    public void syncData(String user, String date) {
 
         HashMap<String,Object> hm = new HashMap<>();
         hm.put("user",user);
@@ -283,6 +283,39 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         });
     }
 
+    // 서버 통신 - 서버로 survey 요청
+    public void survey(String user,HashMap<String,Object> hm) {
+        // 디버그
+        Log.d("Server Request","사용자 정보 등록 : " + user + hm + "\n");
+
+        // 요청시 보내는 데이터
+        hm.put("user",user);
+        hm.put("date",date);
+
+        Call<ServerResult> call = service.survey(hm);
+
+        // 비동기 처리
+        call.enqueue(new Callback<ServerResult>() {
+            @Override
+            public void onResponse(Call<ServerResult> call, Response<ServerResult> response) {
+                if(!response.isSuccessful()) {
+                    testText.append("On Response Error {" +
+                            "code: " + response.code() + ", " +
+                            "status: " + response.body().getStatus() + "}\n");
+                    return;
+                }
+
+                String resultString = "On Response {" +
+                        "code: " + response.code() + ", " +
+                        "status: " + response.body().getStatus() + "}\n";
+                testText.setText(resultString);
+            }
+            @Override
+            public void onFailure(Call<ServerResult> call, Throwable t) {
+                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
+            }
+        });
+    }
 
     String getSecond() {
         long now = System.currentTimeMillis();
@@ -305,5 +338,4 @@ public class DrinkingAlcoholActivity extends AppCompatActivity {
         SimpleDateFormat myFormat = new SimpleDateFormat("MMdd");
         return myFormat.format(myDate);
     }
-
 }
