@@ -32,6 +32,7 @@
         <activity android:name=".DrinkingAlcoholActivity"></activity>
 
         <activity android:name=".ReportCalendarActivity"></activity>
+        <activity android:name=".SurveyActivity"></activity>
 
     </application>
 
