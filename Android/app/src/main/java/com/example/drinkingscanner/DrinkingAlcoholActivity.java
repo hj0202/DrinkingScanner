@@ -1,5 +1,6 @@
 package com.example.drinkingscanner;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
@@ -272,8 +274,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                 bestSpeed = response.body().getBestSpeed();
 
                 //위험 알림
-                if(response.body().getStatus() == "danger")
+                if(response.body().getStatus() == "danger") {
+                    showWarning();
                     Log.d("ServerReqeust","Danger!!!");
+                }
             }
 
             @Override
@@ -303,5 +307,16 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         SimpleDateFormat dataFormat = new SimpleDateFormat("ss");
 
         return dataFormat.format(date);
+    }
+
+    private void showWarning() {
+        new AlertDialog.Builder(this)
+                .setTitle("경고")
+                .setMessage("작작 좀 마셔 \n ㅡ.ㅡ")
+                .setNeutralButton("알겠어...", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dlg, int sumthin) {
+                    }
+                })
+                .show(); // 팝업창 보여줌
     }
 }
