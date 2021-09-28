@@ -145,7 +145,7 @@ def savePreToDB(user,date,df,bestSpeed):
         if data.amount == -999: data.amount = df.loc[df.shape[0]-2,'accumAmount']
         data.time = df.loc[df.shape[0]-1,'endTime'] - df.loc[0,'startTime']
         data.maxSpeed = bestSpeed
-        data.meanSpeed = data.amount / data.time
+        data.meanSpeed = float(data.amount) / data.time
         data.save()
         print('Record Count : ', AllData.objects.filter(user=user, date=date).count())
         print('DB : ',AllData.objects.all().values())
@@ -176,9 +176,10 @@ def makeTwoDimension(list_1d):
 
 # 중간중간 권장량이 넘는지 계속해서 체크
 def checkDanger(type,value,user):
+    print("check danger : ",value)
     userinfo = UserInfo.objects.get(user=user)
     if type == 'amount_medium_check' and value > 100:
         return True
-    if type == 'speed_end_check' and value > userinfo.sojuAbility:
+    if type == 'speed_medium_check' and value > userinfo.sojuAbility:
         return True
     return False

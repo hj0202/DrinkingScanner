@@ -18,7 +18,7 @@ public interface RetrofitService {
     Call<ServerResult> saveData(@FieldMap HashMap<String,Object> hm);
 
     @GET("preData")
-    Call<ServerResult> preData(@Query("user") String user, @Query("date") String date, @Query("bestSpeed") Integer bestSpeed);
+    Call<ServerResult> preData(@Query("user") String user, @Query("date") String date, @Query("bestSpeed") Float bestSpeed);
 
     @FormUrlEncoded
     @POST("syncData")
