@@ -153,7 +153,8 @@ def syncData(request):
 
                 # 누적량 위험도 CHECK
                 danger = checkDanger('amount_medium_check',nowAmount,user)
-                danger = checkDanger('speed_medium_check', bestSpeed, user)
+                # danger = checkDanger('speed_medium_check', bestSpeed, user)
+                danger = checkDanger('speed_medium_check', nowSpeed, user)
 
                 # 응답
                 result = dict()
