@@ -25,8 +25,8 @@ class AllData(models.Model):
 
     amount = models.IntegerField()
     time = models.IntegerField()
-    maxSpeed = models.IntegerField()
-    meanSpeed = models.IntegerField()
+    maxSpeed = models.FloatField()
+    meanSpeed = models.FloatField()
 
     drunkenness = models.IntegerField(null=True, blank=True, validators = [MinValueValidator(1),MaxValueValidator(5)])
     satisfaction = models.IntegerField(null=True, blank=True, validators = [MinValueValidator(1),MaxValueValidator(5)])

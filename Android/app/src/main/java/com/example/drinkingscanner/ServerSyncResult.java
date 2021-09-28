@@ -14,12 +14,12 @@ import java.util.ArrayList;
 public class ServerSyncResult {
     @SerializedName("status")
     private String status;
-    private ArrayList<Float> beforeAmount;
-    private ArrayList<Float> bestSpeed;
+    private Float beforeAmount;
+    private Float bestSpeed;
 
     public String getStatus() {
         return status;
     }
-    public Integer getBeforeAmount() { return Math.round(beforeAmount.get(0)); }
-    public Integer getBestSpeed() { return Math.round(bestSpeed.get(0)); }
+    public Integer getBeforeAmount() { return Math.round(beforeAmount); }
+    public Float getBestSpeed() { return bestSpeed; }
 }

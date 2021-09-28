@@ -83,7 +83,7 @@ def preData(request):
     # 요청 데이터
     user = request.GET['user']
     date = request.GET['date']
-    bestSpeed = int(request.GET['bestSpeed'])
+    bestSpeed = float(request.GET['bestSpeed'])
 
     danger = False
 
@@ -97,8 +97,7 @@ def preData(request):
             savePreToDB(user,date,df,bestSpeed)
 
         # 속도 위험도 CHECK
-        danger = checkDanger('speed_end_check', bestSpeed, user)
-
+        danger = checkDanger('speed_medium_check', bestSpeed, user)
 
         # 응답
         if existPreCSV(user, date) and (df.shape[0]==0 or AllData.objects.filter(user=user, date=date).exists() == True):
@@ -129,7 +128,10 @@ def syncData(request):
         user = request.POST['user']
         date = request.POST['date']
         beforeAmount = int(request.POST['beforeAmount'])
-        bestSpeed = int(request.POST['bestSpeed'])
+        bestSpeed = float(request.POST['bestSpeed'])
+
+        print('beforeAmount:',beforeAmount)
+        print('bestSpeed:',bestSpeed)
 
         danger = False
 
@@ -140,41 +142,37 @@ def syncData(request):
                 # 현재 누적량
                 nowAmount = df.loc[df.shape[0] - 1, 'accumAmount']
                 if nowAmount == -999: nowAmount = df.loc[df.shape[0] - 2, 'accumAmount']
-                print(nowAmount)
 
-                # 속도 계산 (10분 = 600초)
-                nowSpeed = (nowAmount - beforeAmount) / 100
-                print(nowSpeed)
+                # 최고 속도 계산 (10분 = 600초)
+                print(nowAmount-beforeAmount)
+                nowSpeed = float(nowAmount - beforeAmount / 100)
+                if bestSpeed < nowSpeed: bestSpeed = nowSpeed
+
+                print("nowAmount:",int(nowAmount))
+                print("nowSpeed:",float(bestSpeed))
 
                 # 누적량 위험도 CHECK
                 danger = checkDanger('amount_medium_check',nowAmount,user)
+                # danger = checkDanger('speed_medium_check', bestSpeed, user)
+                danger = checkDanger('speed_medium_check', nowSpeed, user)
 
-            # 응답 전 누적 량, 최고 속도 조정
-            NA = []
-            NA.append(nowAmount)
-            BS = []
-            if bestSpeed < nowSpeed:
-                BS.append(nowSpeed)
-            else:
-                BS.append(bestSpeed)
+                # 응답
+                result = dict()
 
-            # 응답
-            result = dict()
+                if danger == True:
+                    result['status'] = 'danger'
+                else:
+                    result['status'] = 'no danger'
 
-            if danger == True:
-                result['status'] = 'danger'
-            else:
-                result['status'] = 'no danger'
+                result['beforeAmount'] = int(nowAmount)
+                result['bestSpeed'] = float(bestSpeed)
 
-            result['beforeAmount'] = NA
-            result['bestSpeed'] = BS
-
-            return JsonResponse(result, status=200)
+                return JsonResponse(result, status=200)
 
     result = dict()
     result['status'] = 'request error'
-    result['beforeAmount'] = []
-    result['bestSpeed'] = []
+    result['beforeAmount'] = int(-1)
+    result['bestSpeed'] = float(-1)
     return JsonResponse(result, status=203)
 
 

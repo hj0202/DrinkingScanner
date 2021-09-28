@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitConnection extends AppCompatActivity {
     private static Gson gson = new GsonBuilder().setLenient().create();
     private static Retrofit retrofit  = new Retrofit.Builder()
-            .baseUrl("http://172.21.152.63:8000/apiserver/")
+            .baseUrl("http://192.168.170.63:8000/apiserver/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build();
     private static RetrofitService service = retrofit.create(RetrofitService.class);

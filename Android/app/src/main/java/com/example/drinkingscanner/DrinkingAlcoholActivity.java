@@ -35,8 +35,8 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
     private Boolean sendDataState = true;       // 서버 통신 - sendData를 하고 있냐 안하고 있냐
     private String user,date;           // 서버 통신 - user,date
     private Integer syncTime = 5;      // 서버 통신 - 동기화 함수 간격
-    private Integer beforeAmount;       // 서버 통신 - 동기화 함수 이전 값
-    private Integer bestSpeed;          // 서버 통신 - 동기화 함수 최고 속도
+    private Integer beforeAmount = 0;       // 서버 통신 - 동기화 함수 이전 값
+    private Float bestSpeed = (float)0;          // 서버 통신 - 동기화 함수 최고 속도
 
 
     @Override
@@ -70,10 +70,6 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         // 서버 통신 - user,date
         user = getUser();
         date = getDate();
-
-        // 서버 통신 - 이전 누적량, 최고 속도 저장
-        beforeAmount = 0;
-        bestSpeed = 0;
 
         receiveData();
     }
@@ -123,11 +119,11 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                                                     // 서버 통신 - 60개씩 데이터를 CSV로 저장
                                                     saveData(user,date,sendData);
                                                     // 서버 통신 - 누적량, 속도 위험도 체크를 위한 동기화
-//                                                    syncTime = syncTime-1;
-//                                                    if(syncTime == 0) {
-//                                                        syncData(user,date);
-//                                                        syncTime = 10;
-//                                                    }
+                                                    syncTime = syncTime-1;
+                                                    if(syncTime == 0) {
+                                                        syncData(user,date);
+                                                        syncTime = 10;
+                                                    }
 
                                                     testText.setText("send data : ");   // 테스트용
                                                     testText.append(user + " " );       // 테스트용
@@ -255,28 +251,29 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         call.enqueue(new Callback<ServerSyncResult>() {
             @Override
             public void onResponse(Call<ServerSyncResult> call, Response<ServerSyncResult> response) {
+                Log.d("Server Reqeust","데이터 동기화 : "+beforeAmount+bestSpeed+"\n");
+
                 if(!response.isSuccessful()) {
                     //테스트용
                     testText.append("\n On Response Error {" +
                             "code: " + response.code() + ", " +
-                            "status: " + response.body().getStatus() + ", " +
-                            "BeforeAmount: " + response.body().getBeforeAmount() + ", " +
-                            "BestSpeed: " + response.body().getBestSpeed() + "}\n");
-
-                    // 이전 누적 량, 최고 속도 저장
-                    beforeAmount = response.body().getBeforeAmount();
-                    bestSpeed = response.body().getBestSpeed();
-
-                    //위험 알림
-                    if(response.body().getStatus() == "danger")
-                        Log.d("ServerReqeust","Danger!!!");
+                            "status: " + response.body().getStatus() + ", " + "}\n");
 
                     return;
                 }
-
                 testText.append("\n On Response {" +
                         "code: " + response.code() + ", " +
-                        "status: " + response.body().getStatus() + "}\n");
+                        "status: " + response.body().getStatus() + ", " +
+                        "BeforeAmount: " + response.body().getBeforeAmount() + ", " +
+                        "BestSpeed: " + response.body().getBestSpeed() + "}\n");
+
+                // 이전 누적 량, 최고 속도 저장
+                beforeAmount = response.body().getBeforeAmount();
+                bestSpeed = response.body().getBestSpeed();
+
+                //위험 알림
+                if(response.body().getStatus() == "danger")
+                    Log.d("ServerReqeust","Danger!!!");
             }
 
             @Override
