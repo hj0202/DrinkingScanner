@@ -34,7 +34,7 @@
         <activity android:name=".ReportCalendarActivity"></activity>
         <activity android:name=".SurveyActivity"></activity>
         <activity android:name=".DayReportActivity"></activity>
-
+        <activity android:name=".AllReportActivity"></activity>
     </application>
 
     <!--Bluetooth-->
