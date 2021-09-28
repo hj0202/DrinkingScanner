@@ -1,6 +1,6 @@
 package com.example.drinkingscanner;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -90,6 +90,10 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
         {
             String message = "Selected Date " + dayText + " " + monthYearFromDate(selectedDate);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(getApplicationContext(), DayReportActivity.class);
+            intent.putExtra("date", dayText + " " + monthYearFromDate(selectedDate));
+            startActivity(intent);
         }
     }
 }
