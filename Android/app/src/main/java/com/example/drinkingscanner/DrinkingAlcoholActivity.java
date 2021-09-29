@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -30,7 +31,10 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
     private int readBufferPosition;     // 버퍼 내 문자 저장 위치
     private ArrayList<String> sendData; // 서버에 보낼 데이터 (60개)
 
-    private TextView testText;          // 테스트용. 화면 구성 시 삭제바람
+    //private TextView testText;          // 테스트용. 화면 구성 시 삭제바람
+    private TextView syncDataResult;    // syncData 결과 출력
+    private TextView startTime;
+    private ImageView alcoholView;
     private Button stopSendButton;      // 데이터 수집 종료 버튼
 
     private RetrofitService service;    // 서버 통신 - 통신 함수를 가지고 있는 Retrofit 객체
@@ -46,8 +50,11 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drinking_alcohol);
 
-        testText = (TextView)findViewById(R.id.textView);   // 테스트용
+        //testText = (TextView)findViewById(R.id.textView);   // 테스트용
+        syncDataResult = (TextView)findViewById(R.id.syncDataResult);
+        startTime = (TextView)findViewById(R.id.startTime);
         stopSendButton = (Button)findViewById(R.id.stopSendData);
+        alcoholView = (ImageView)findViewById(R.id.alcoholView);
 
         // 데이터 수집 종료 버튼 이벤트
         View.OnClickListener stopListener = new View.OnClickListener() {
@@ -72,6 +79,9 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         // 서버 통신 - user,date
         user = getUser();
         date = getDate();
+
+        // 현재 시간 출력
+        startTime.setText("START : " + getCurrentTime());
 
         receiveData();
     }
@@ -112,8 +122,9 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                                             String second = getSecond();
 
                                             if (!currentTime.equals(second) && sendDataState==true) {
-                                                testText.append("[" + second + "s,");          // 테스트용
-                                                testText.append(text + "ml] ");           // 테스트용
+                                                Log.d("Device","["+second+"s, "+text+"ml]\n");
+                                                //testText.append("[" + second + "s,");          // 테스트용
+                                                //testText.append(text + "ml] ");           // 테스트용
                                                 // 서버 통신 - 데이터 쌓기
                                                 sendData.add(text);
 
@@ -127,10 +138,6 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                                                         syncTime = 10;
                                                     }
 
-                                                    testText.setText("send data : ");   // 테스트용
-                                                    testText.append(user + " " );       // 테스트용
-                                                    testText.append(date + " " );       // 테스트용
-                                                    testText.append(sendData + "/n");   // 테스트용
                                                     sendData.clear();
                                                 }
                                                 currentTime = second;
@@ -164,7 +171,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         preData(user,date);
         Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
         startActivity(intent);
-        testText.setText("start pre data : "+user+date);  // 테스트용
+        Log.d("Button Click","그만 마시기\n");
     }
 
     // 서버 통신 - 서버로 saveData 요청
@@ -178,7 +185,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         hm.put("date",date);
         hm.put("data",data);
 
-        Log.d("Server Reqeust","데이터 저장 : "+hm.toString() + "\n");
+        Log.d("Server Request","데이터 저장 : "+hm.toString() + "\n");
         Call<ServerResult> call = service.saveData(hm);
 
         // 비동기 처리
@@ -186,30 +193,31 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<ServerResult> call, Response<ServerResult> response) {
                 if(!response.isSuccessful()) {
-                    //테스트용
-                    testText.append("\n On Response Error {" +
+                    Log.d("Server Response","On Response Error {" +
                             "code: " + response.code() + ", " +
                             "status: " + response.body().getStatus() + "}\n");
+
+//                    testText.append("On Response Error {" +
+//                            "code: " + response.code() + ", " +
+//                            "status: " + response.body().getStatus() + "}\n");
                     return;
                 }
 
-                testText.append("\n On Response {" +
+                Log.d("Server Response","On Response {" +
                         "code: " + response.code() + ", " +
                         "status: " + response.body().getStatus() + "}\n");
             }
 
             @Override
             public void onFailure(Call<ServerResult> call, Throwable t) {
-                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
+                Log.d("Server Response","On Failure: "+ call + '\n');
             }
         });
     }
 
     // 서버 통신 - 서버로 preData 요청
     public void preData(String user, String date) {
-        // 디버그
         Log.d("Server Request","데이터 전처리 : " + user + date + "\n");
-
         // 요청시 보내는 데이터 (최고 속도도 함께 보내준다)
         Call<ServerResult> call = service.preData(user,date,bestSpeed);
 
@@ -218,21 +226,20 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call<ServerResult> call, Response<ServerResult> response) {
                 if(!response.isSuccessful()) {
-                    testText.append("On Response Error {" +
+                    Log.d("Server Response","On Response Error {" +
                             "code: " + response.code() + ", " +
                             "status: " + response.body().getStatus() + "}\n");
                     return;
                 }
 
-                String resultString = "On Response {" +
+                Log.d("Server Response","On Response {" +
                         "code: " + response.code() + ", " +
-                        "status: " + response.body().getStatus() + "}\n";
-                testText.setText(resultString);
+                        "status: " + response.body().getStatus() + "}\n");
             }
 
             @Override
             public void onFailure(Call<ServerResult> call, Throwable t) {
-                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
+                Log.d("Server Response","On Failure: "+ call + '\n');
             }
         });
     }
@@ -246,24 +253,23 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         hm.put("beforeAmount",beforeAmount);
         hm.put("bestSpeed",bestSpeed);
 
-        Log.d("Server Reqeust","데이터 동기화 : "+user+date+beforeAmount+bestSpeed+"\n");
+        Log.d("Server Reqeust","데이터 동기화 : "+hm.toString()+"\n");
         Call<ServerSyncResult> call = service.syncData(hm);
 
         // 비동기 처리
         call.enqueue(new Callback<ServerSyncResult>() {
             @Override
             public void onResponse(Call<ServerSyncResult> call, Response<ServerSyncResult> response) {
-                Log.d("Server Reqeust","데이터 동기화 : "+beforeAmount+bestSpeed+"\n");
 
                 if(!response.isSuccessful()) {
-                    //테스트용
-                    testText.append("\n On Response Error {" +
+                    Log.d("Server Response","On Response Error {" +
                             "code: " + response.code() + ", " +
-                            "status: " + response.body().getStatus() + ", " + "}\n");
+                            "status: " + response.body().getStatus() + "}\n");
 
                     return;
                 }
-                testText.append("\n On Response {" +
+                //테스트
+                Log.d("Server Response","\n On Response {" +
                         "code: " + response.code() + ", " +
                         "status: " + response.body().getStatus() + ", " +
                         "BeforeAmount: " + response.body().getBeforeAmount() + ", " +
@@ -273,16 +279,26 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                 beforeAmount = response.body().getBeforeAmount();
                 bestSpeed = response.body().getBestSpeed();
 
+                //화면에 마신 양 출력
+                Log.d("Server Response","beforeAmount : "+beforeAmount);
+
+                if(beforeAmount > 360) syncDataResult.setText(beforeAmount/360 + "병 " + beforeAmount%360 + "잔 (" +beforeAmount+") 입니다");
+                else if(beforeAmount > 50) syncDataResult.setText("0병 " + beforeAmount%360 + "잔 (" +beforeAmount+") 입니다");
+                else syncDataResult.setText("아직 한잔도? 실망입니다");
+
+                if(beforeAmount/360 > 2) alcoholView.setImageResource(R.drawable.sojumany);
+                else if (beforeAmount/360 == 2) alcoholView.setImageResource(R.drawable.soju2);
+                else alcoholView.setImageResource(R.drawable.soju1);
+
                 //위험 알림
                 if(response.body().getStatus() == "danger") {
                     showWarning();
-                    Log.d("ServerReqeust","Danger!!!");
                 }
             }
 
             @Override
             public void onFailure(Call<ServerSyncResult> call, Throwable t) {
-                testText.setText("On Failure: \n"+ call + "\n" + t + "\n");
+                Log.d("Server Response","On Failure: "+ call + '\n');
             }
         });
     }
@@ -305,6 +321,14 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
         long now = System.currentTimeMillis();
         Date date = new Date(now);
         SimpleDateFormat dataFormat = new SimpleDateFormat("ss");
+
+        return dataFormat.format(date);
+    }
+
+    String getCurrentTime() {
+        long now = System.currentTimeMillis();
+        Date date = new Date(now);
+        SimpleDateFormat dataFormat = new SimpleDateFormat("hh:mm");
 
         return dataFormat.format(date);
     }
