@@ -3,6 +3,7 @@ package com.example.drinkingscanner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +83,11 @@ public class ReportCalendarActivity extends AppCompatActivity implements Calenda
     public void nextMonthAction(View view) {
         selectedDate = selectedDate.plusMonths(1);
         setMonthView();
+    }
+
+    public void startAllReport(View view) {
+        Intent intent = new Intent(getApplicationContext(), AllReportActivity.class);
+        startActivity(intent);
     }
 
     @Override
