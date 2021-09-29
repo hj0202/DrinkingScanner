@@ -143,9 +143,9 @@ def syncData(request):
                 nowAmount = df.loc[df.shape[0] - 1, 'accumAmount']
                 if nowAmount == -999: nowAmount = df.loc[df.shape[0] - 2, 'accumAmount']
 
-                # 최고 속도 계산 (10분 = 600초)
+                # 최고 속도 계산 (50초마다라서)
                 print(nowAmount-beforeAmount)
-                nowSpeed = float(nowAmount - beforeAmount / 100)
+                nowSpeed = float(nowAmount - beforeAmount / 50)
                 if bestSpeed < nowSpeed: bestSpeed = nowSpeed
 
                 print("nowAmount:",int(nowAmount))
@@ -173,7 +173,7 @@ def syncData(request):
                 # 응답
                 result = dict()
                 result['status'] = 'success'
-                result['beforeAmount'] = int(nowAmount)
+                result['beforeAmount'] = int(0)
                 result['bestSpeed'] = float(bestSpeed)
                 return JsonResponse(result, status=200)
 

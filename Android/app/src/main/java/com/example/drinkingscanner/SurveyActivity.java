@@ -1,5 +1,6 @@
 package com.example.drinkingscanner;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -84,7 +85,9 @@ public class SurveyActivity extends AppCompatActivity {
 
                 // TODO: 아래 5개 데이터를 데이터베이스에 정보 보내기
                 survey(user,date,drunk,satisfy,alcohol,who,money);
-
+                Intent intent = new Intent(getApplicationContext(), BeforeConnectSelectActivity.class);
+                startActivity(intent);
+                finish();
             }
         };
         saveButton.setOnClickListener(clickSaveButton);
