@@ -168,13 +168,20 @@ def syncData(request):
                 result['bestSpeed'] = float(bestSpeed)
 
                 return JsonResponse(result, status=200)
+            
+            else:
+                # 응답
+                result = dict()
+                result['status'] = 'success'
+                result['beforeAmount'] = int(nowAmount)
+                result['bestSpeed'] = float(bestSpeed)
+                return JsonResponse(result, status=200)
 
     result = dict()
     result['status'] = 'request error'
     result['beforeAmount'] = int(-1)
     result['bestSpeed'] = float(-1)
     return JsonResponse(result, status=203)
-
 
 # 원시데이터 -> 시간(X) 무게(Y)
 def toTimeWeight(request):
@@ -238,7 +245,6 @@ def toTimeAmount(request):
         result['status'] = 'request error'
         return JsonResponse(result, status=203)
         # return render(request, 'apiserver/result.html', {'result': result})
-
 
 @csrf_exempt
 # 사용자가 설문 작성
