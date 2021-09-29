@@ -5,23 +5,84 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="136dp"-->
+<!--        android:layout_marginEnd="92dp"-->
+<!--        android:layout_marginRight="92dp"-->
+<!--        android:text="DrinkingAlcohol"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="92dp"
-        android:layout_marginRight="92dp"
-        android:text="DrinkingAlcohol"
+        android:layout_marginTop="32dp"
+        android:gravity="center_horizontal"
+        android:text="현재 음주량은"
+        android:textColor="@color/purple_200"
+        android:textSize="40dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/syncDataResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="60초 후에 공개합니다"
+        android:textSize="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleView" />
+
+    <TextView
+        android:id="@+id/startTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:text="아직시작안해따~"
+        android:textSize="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/syncDataResult" />
+
+    <ImageView
+        android:id="@+id/alcoholView"
+        android:layout_width="382dp"
+        android:layout_height="321dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/sojumany"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alcoholType" />
+
+    <TextView
+        android:id="@+id/alcoholType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="소주 마시는 중"
+        android:textColor="@color/teal_700"
+        android:textSize="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startTime" />
 
     <Button
         android:id="@+id/stopSendData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="stopSendData"
-        android:text="stopSendData"
-        tools:ignore="MissingConstraints" />
+        android:text="STOP DRINKING"
+        android:textSize="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alcoholView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
