@@ -61,6 +61,7 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 stopSendData();
+                finish();
             }
         };
         stopSendButton.setOnClickListener(stopListener);
@@ -282,17 +283,19 @@ public class DrinkingAlcoholActivity extends AppCompatActivity{
                 //화면에 마신 양 출력
                 Log.d("Server Response","beforeAmount : "+beforeAmount);
 
-                if(beforeAmount > 360) syncDataResult.setText(beforeAmount/360 + "병 " + beforeAmount%360 + "잔 (" +beforeAmount+") 입니다");
-                else if(beforeAmount > 50) syncDataResult.setText("0병 " + beforeAmount%360 + "잔 (" +beforeAmount+") 입니다");
-                else syncDataResult.setText("아직 한잔도? 실망입니다");
+                if(beforeAmount > 360) syncDataResult.setText(beforeAmount/360 + "병 " + (beforeAmount%360)/50 + "잔 (" +beforeAmount+"ml) 입니다");
+                else if(beforeAmount > 50) syncDataResult.setText("0병 " + beforeAmount/360 + "잔 (" +beforeAmount+"ml) 입니다");
+                else syncDataResult.setText("천천히 음주 좋아요~");
 
                 if(beforeAmount/360 > 2) alcoholView.setImageResource(R.drawable.sojumany);
                 else if (beforeAmount/360 == 2) alcoholView.setImageResource(R.drawable.soju2);
                 else alcoholView.setImageResource(R.drawable.soju1);
 
                 //위험 알림
-                if(response.body().getStatus() == "danger") {
+                Log.d("Server Response",response.body().getStatus());
+                if(response.body().getStatus() =="danger") {
                     showWarning();
+                    Log.d("Server Response","danger!!");
                 }
             }
 

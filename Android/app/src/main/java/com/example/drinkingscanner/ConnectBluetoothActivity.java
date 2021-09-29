@@ -26,12 +26,14 @@ public class ConnectBluetoothActivity extends AppCompatActivity {
                     "해당 기기는 블루투스를 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            finish();
         }
         else if (result == BluetoothConnectResult.BLUETOOTH_OFF) {
             Toast.makeText(getApplicationContext(),
                     "블루투스를 켜주세요.", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
+            finish();
         }
         else if (result == BluetoothConnectResult.BLUETOOTH_ON) {
             selectDevice();

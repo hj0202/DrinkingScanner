@@ -68,6 +68,7 @@ public class BeforeConnectSelectActivity extends Activity {
                 // 기기 연결 화면으로 이동
                 Intent intent = new Intent(getApplicationContext(), ConnectBluetoothActivity.class);
                 startActivity(intent);
+                finish();
             }
         };
 
