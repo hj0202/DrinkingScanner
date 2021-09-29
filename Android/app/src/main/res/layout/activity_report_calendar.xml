@@ -6,12 +6,18 @@
     android:orientation="vertical"
     tools:context=".ReportCalendarActivity">
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="누적 통계 보기"
+        android:textSize="20sp"
+        android:onClick="startAllReport"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginBottom="20dp">
 
         <Button
             android:layout_width="0dp"

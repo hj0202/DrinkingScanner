@@ -37,8 +37,11 @@ class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>
     {
         holder.dayOfMonth.setText(dayOfMonth.get(position));
 
-        if (dayOfMonth.get(position) != "") // warning : null != ""
+        if (dayOfMonth.get(position) != "" ) // warning : null != ""
             holder.iconNoDrink.setVisibility(View.VISIBLE);
+        if (dayOfMonth.get(position) != "" && (Integer.parseInt(dayOfMonth.get(position)) == 4
+                || Integer.parseInt(dayOfMonth.get(position)) == 26))
+            holder.iconNoDrink.setImageResource(R.drawable.ic_baseline_warning_24);
     }
 
     @Override
